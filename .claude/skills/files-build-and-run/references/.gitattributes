@@ -1,0 +1,2 @@
+# Keep patch files as LF so `git apply` matches LF checkouts on non-Windows hosts.
+*.patch text eol=lf

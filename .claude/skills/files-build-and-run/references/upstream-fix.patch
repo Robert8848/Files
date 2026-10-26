@@ -1,0 +1,42 @@
+diff --git a/src/Files.App/Utils/Storage/Collection/BulkConcurrentObservableCollection.cs b/src/Files.App/Utils/Storage/Collection/BulkConcurrentObservableCollection.cs
+index 2f32ea759..b95073d40 100644
+--- a/src/Files.App/Utils/Storage/Collection/BulkConcurrentObservableCollection.cs
++++ b/src/Files.App/Utils/Storage/Collection/BulkConcurrentObservableCollection.cs
+@@ -134,6 +134,10 @@ namespace Files.App.Utils.Storage
+ 		{
+ 		}
+ 
++		protected virtual void OnItemMoved()
++		{
++		}
++
+ 		public virtual void EndBulkOperation()
+ 		{
+ 			lock (syncRoot)
+@@ -301,8 +305,7 @@ namespace Files.App.Utils.Storage
+ 				OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, item, newIndex, oldIndex), false);
+ 			}
+ 
+-			if (IsGrouped)
+-				ResetGroups();
++			OnItemMoved();
+ 		}
+ 
+ 		public void AddRange(IEnumerable<T> items)
+diff --git a/src/Files.App/Utils/Storage/Collection/GroupableBulkConcurrentObservableCollection.cs b/src/Files.App/Utils/Storage/Collection/GroupableBulkConcurrentObservableCollection.cs
+index 9f5c2692a..614c82803 100644
+--- a/src/Files.App/Utils/Storage/Collection/GroupableBulkConcurrentObservableCollection.cs
++++ b/src/Files.App/Utils/Storage/Collection/GroupableBulkConcurrentObservableCollection.cs
+@@ -48,6 +48,12 @@ namespace Files.App.Utils.Storage
+ 			GroupedCollection?.Clear();
+ 		}
+ 
++		protected override void OnItemMoved()
++		{
++			if (IsGrouped)
++				ResetGroups();
++		}
++
+ 		protected override void UpdateGroups(NotifyCollectionChangedEventArgs e)
+ 		{
+ 			if (IsGrouped)
